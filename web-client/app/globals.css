@@ -20,7 +20,7 @@
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    @apply bg-gradient-to-r from-sage-600 to-primary-700 text-white hover:from-sage-700 hover:to-primary-800 focus:ring-sage-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
   }
   
   .btn-secondary {
@@ -28,7 +28,7 @@
   }
   
   .btn-accent {
-    @apply bg-gradient-to-r from-neutral-700 to-neutral-900 text-white hover:from-neutral-800 hover:to-neutral-900 focus:ring-neutral-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    @apply bg-gradient-to-r from-accent-600 to-sage-700 text-white hover:from-accent-700 hover:to-sage-800 focus:ring-accent-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
   }
   
   .card {
@@ -68,11 +68,11 @@
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-neutral-600 to-neutral-900 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sage-600 to-primary-800 bg-clip-text text-transparent;
   }
   
   .hero-section {
-    @apply relative bg-gradient-to-br from-neutral-50 via-white to-neutral-100 overflow-hidden;
+    @apply relative bg-gradient-to-br from-sage-50 via-white to-primary-100 overflow-hidden;
   }
   
   .floating-element {
@@ -106,16 +106,16 @@
 }
 
 .audio-progress-bar {
-  @apply h-full bg-gradient-to-r from-neutral-500 to-neutral-700 transition-all duration-100 ease-out;
+  @apply h-full bg-gradient-to-r from-sage-500 to-primary-700 transition-all duration-100 ease-out;
 }
 
 /* Waveform visualization */
 .waveform-bar {
-  @apply bg-gradient-to-t from-neutral-400 to-neutral-600 rounded-sm transition-all duration-75;
+  @apply bg-gradient-to-t from-sage-400 to-sage-600 rounded-sm transition-all duration-75;
 }
 
 .waveform-bar.active {
-  @apply from-neutral-600 to-neutral-800;
+  @apply from-primary-600 to-primary-800;
 }
 
 /* Loading animations */

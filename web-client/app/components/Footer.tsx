@@ -1,5 +1,18 @@
 import Link from 'next/link'
-import { MusicalNoteIcon } from '@heroicons/react/24/outline'
+
+// Official SoundHunter Logo Component
+const SoundHunterLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 1000 1000" fill="currentColor">
+    <g>
+      <g>
+        <g>
+          <path d="m379.34 860c-198.5 0-360-161.5-360-360h240c0 66.17 53.83 120 120 120 66.17 0 120-53.83 120-120h240c0 198.5-161.49 360-360 360z"/>
+          <path d="m979.34 500h-240c0-66.17-53.83-120-120-120-66.17 0-120 53.83-120 120h-240c0-198.5 161.5-360 360-360 198.51 0 360 161.5 360 360z"/>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
 
 const footerNavigation = {
   discover: [
@@ -60,8 +73,8 @@ export default function Footer() {
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl">
-                <MusicalNoteIcon className="w-6 h-6 text-white" />
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-sage-600 to-primary-700 rounded-xl shadow-lg">
+                <SoundHunterLogo className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-bold gradient-text">SoundHunter</span>
             </Link>
