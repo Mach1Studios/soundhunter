@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { 
   MusicalNoteIcon, 
   BuildingOffice2Icon, 
-  TreePineIcon, 
   GlobeAltIcon,
   MicrophoneIcon,
   SpeakerWaveIcon 
@@ -14,7 +13,7 @@ const categories = [
   {
     name: 'Nature & Environment',
     description: 'Forest sounds, ocean waves, wildlife recordings',
-    icon: TreePineIcon,
+    icon: GlobeAltIcon,
     count: '2,847',
     gradient: 'from-green-400 to-emerald-600',
     bgGradient: 'from-green-50 to-emerald-50',

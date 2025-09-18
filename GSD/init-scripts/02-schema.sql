@@ -4,10 +4,27 @@
 -- Audio layout types enum
 CREATE TYPE audio_layout AS ENUM (
     'mono',
-    'stereo', 
+    'stereo',
+    'lcr',
+    'ortf',
     'quad',
-    'ambisonic_foa',
-    'mach1_8ch'
+    'ACNSN3DO1A',
+    'ACNSN3DO2A',
+    'ACNSN3DO3A',
+    'ACNSN3DO4A',
+    'ACNSN3DO5A',
+    'ACNSN3DO6A',
+    'ACNSN3DO7A',
+    'Mach1Spatial-4',
+    'Mach1Spatial-8',
+    'Mach1Spatial-14',
+    'A-Format',
+    'ambeo',
+    'tetra-mic',
+    'SPS-200',
+    'NT-SF1',
+    'CoreSound-OctoMic',
+    'ZM-1'
 );
 
 -- Audio format enum
@@ -86,8 +103,8 @@ CREATE TABLE audio_recordings (
     
     -- Categorization
     tags TEXT[], -- Array of tags
-    genre VARCHAR(100),
-    mood VARCHAR(100),
+    genre VARCHAR(100), -- optional
+    mood VARCHAR(100), -- optional
     environment VARCHAR(100), -- indoor, outdoor, urban, nature, etc.
     
     -- Processing status

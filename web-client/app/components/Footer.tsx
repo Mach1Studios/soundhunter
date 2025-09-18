@@ -11,11 +11,8 @@ const footerNavigation = {
   community: [
     { name: 'Upload', href: '/upload' },
     { name: 'Collections', href: '/collections' },
-    { name: 'Artists', href: '/artists' },
-    { name: 'Blog', href: '/blog' },
   ],
   support: [
-    { name: 'Help Center', href: '/help' },
     { name: 'API Docs', href: '/api' },
     { name: 'Contact', href: '/contact' },
     { name: 'Feedback', href: '/feedback' },
@@ -78,8 +75,8 @@ export default function Footer() {
               <span className="text-xl font-bold gradient-text">SoundHunter</span>
             </Link>
             <p className="text-gray-600 text-base">
-              Discover and explore audio recordings from around the world. 
-              Connect with sounds, places, and stories through our global audio database.
+              Catalogue and explore audio recordings from around the world. 
+              Connect with sounds, places, and environments through the global audio database.
             </p>
             <div className="flex space-x-6">
               {socialLinks.map((item) => (
@@ -164,10 +161,10 @@ export default function Footer() {
         <div className="mt-12 border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              &copy; 2024 SoundHunter. All rights reserved.
+              &copy; 2025 SoundHunter. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0 flex items-center space-x-4 text-sm text-gray-500">
-              <span>Made with ❤️ for audio enthusiasts</span>
+              <span>Made for audio enthusiasts by audio enthusiasts</span>
               <span>•</span>
               <span>Powered by GSD</span>
             </div>

@@ -1,4 +1,4 @@
-# SoundHunter Web Client
+# Soundhunter - Cross-Platform Audio Discovery Client
 
 A beautiful, modern web application for discovering and exploring audio recordings from around the world. Built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion.
 

@@ -8,15 +8,13 @@ import {
   XMarkIcon,
   MusicalNoteIcon,
   MapIcon,
-  HeartIcon,
   UserIcon
 } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Discover', href: '/discover', icon: MagnifyingGlassIcon },
+  // { name: 'Discover', href: '/discover', icon: MagnifyingGlassIcon },
   { name: 'Map', href: '/map', icon: MapIcon },
-  { name: 'Favorites', href: '/favorites', icon: HeartIcon },
-  { name: 'Profile', href: '/profile', icon: UserIcon },
+  // { name: 'Profile', href: '/profile', icon: UserIcon },
 ]
 
 export default function Header() {
@@ -29,9 +27,6 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl">
-                <MusicalNoteIcon className="w-6 h-6 text-white" />
-              </div>
               <span className="text-xl font-bold gradient-text">SoundHunter</span>
             </Link>
           </div>
