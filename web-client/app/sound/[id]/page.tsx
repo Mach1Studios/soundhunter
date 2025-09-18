@@ -4,6 +4,23 @@ interface SoundPageProps {
   };
 }
 
+// Generate static params for static export
+// This is required when using output: 'export' in Next.js
+export async function generateStaticParams() {
+  // For now, return an empty array since this is a placeholder page
+  // In a real app, you would fetch all sound IDs from your API
+  // Example:
+  // const sounds = await fetch('your-api/sounds').then(res => res.json())
+  // return sounds.map((sound) => ({ id: sound.id }))
+  
+  return [
+    // Add some example IDs for demonstration
+    { id: 'example-1' },
+    { id: 'example-2' },
+    { id: 'example-3' },
+  ];
+}
+
 export default function SoundPage({ params }: SoundPageProps) {
   return (
     <div className="min-h-screen bg-neutral-100">

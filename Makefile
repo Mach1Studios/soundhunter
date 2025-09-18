@@ -159,7 +159,13 @@ stop-all:
 # Build web client for production
 build-web:
 	@echo "$(GREEN)Building web client for production...$(NC)"
-	@cd $(WEB_CLIENT_DIR) && npm run build
+	@cd $(WEB_CLIENT_DIR) && npm run build:static
+	@if [ ! -d "$(WEB_CLIENT_DIR)/out" ]; then \
+		echo "$(RED)Error: Build output directory not found$(NC)"; \
+		echo "$(YELLOW)Checking for alternative build outputs...$(NC)"; \
+		ls -la $(WEB_CLIENT_DIR)/ | grep -E "(out|dist|build)"; \
+		exit 1; \
+	fi
 	@echo "$(GREEN)✓ Web client build completed$(NC)"
 
 # Check AWS CLI configuration

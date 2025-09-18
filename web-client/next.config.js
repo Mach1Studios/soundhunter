@@ -7,7 +7,13 @@ const nextConfig = {
   },
   images: {
     domains: ['localhost'],
+    unoptimized: true, // Required for static export
   },
+  // Enable static export for S3 deployment
+  output: 'export',
+  trailingSlash: true,
+  // Disable image optimization for static export
+  distDir: 'out',
 }
 
 module.exports = nextConfig
