@@ -21,15 +21,15 @@ function MainTabs() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: 'white',
-          borderTopColor: '#d4d4d4',
+          backgroundColor: '#f8f9f7', // sage-50
+          borderTopColor: '#ccd3c2', // sage-300
           borderTopWidth: 1,
           paddingTop: 8,
           paddingBottom: 8,
           height: 60,
         },
-        tabBarActiveTintColor: '#171717',
-        tabBarInactiveTintColor: '#737373',
+        tabBarActiveTintColor: '#5a674c', // primary-700
+        tabBarInactiveTintColor: '#96a584', // sage-500
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
@@ -89,11 +89,11 @@ export default function AppNavigator() {
             headerShown: true,
             headerTitle: 'Sound Detail',
             headerStyle: {
-              backgroundColor: 'white',
-              borderBottomColor: '#d4d4d4',
+              backgroundColor: '#f8f9f7', // sage-50
+              borderBottomColor: '#ccd3c2', // sage-300
               borderBottomWidth: 1,
             },
-            headerTintColor: '#171717',
+            headerTintColor: '#5a674c', // primary-700
             headerTitleStyle: {
               fontSize: 16,
               fontWeight: '600',

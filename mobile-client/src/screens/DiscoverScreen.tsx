@@ -4,6 +4,7 @@ import SearchBar from '../components/SearchBar';
 import SectionTitle from '../components/SectionTitle';
 import Chip from '../components/Chip';
 import WorldMapCTA from '../components/WorldMapCTA';
+import SoundHunterLogo from '../components/SoundHunterLogo';
 
 const DiscoverScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,8 +21,10 @@ const DiscoverScreen: React.FC = () => {
       <View className="p-4 space-y-4">
         {/* Header */}
         <View className="flex-row items-center gap-3">
-          <View className="w-7 h-7 rounded border border-neutral-300 bg-neutral-100" />
-          <Text className="text-sm font-medium text-neutral-900">Soundhunter</Text>
+          <View className="w-7 h-7 rounded border border-sage-300 bg-gradient-to-br from-sage-600 to-primary-700 items-center justify-center">
+            <SoundHunterLogo size={20} color="#ffffff" />
+          </View>
+          <Text className="text-sm font-medium text-primary-800">Soundhunter</Text>
         </View>
 
         {/* Search Bar */}
