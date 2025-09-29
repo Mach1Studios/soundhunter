@@ -32,9 +32,6 @@
   "exclude": [
     "node_modules",
     "App.tsx",
-    "index.js",
-    "src/components/shared/*.tsx",
-    "src/screens/*.tsx",
-    "src/utils/platform.ts"
+    "index.js"
   ]
 }
