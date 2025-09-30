@@ -118,13 +118,18 @@ dev-all:
 	@echo "$(YELLOW)Use 'make stop-all' to stop all services$(NC)"
 	@echo ""
 	
+	# Create logs directory first
+	@mkdir -p logs
+	
 	# Start services in background
 	@cd $(GSD_DIR) && docker-compose up -d
-	@cd $(WEB_CLIENT_DIR) && npm run dev > ../logs/web-client.log 2>&1 & echo $$! > ../logs/web-client.pid
-	@cd $(MOBILE_CLIENT_DIR) && npm start > ../logs/mobile-client.log 2>&1 & echo $$! > ../logs/mobile-client.pid
-	@cd $(ADMIN_PORTAL_DIR) && npm run dev > ../logs/admin-portal.log 2>&1 & echo $$! > ../logs/admin-portal.pid
-	
-	@mkdir -p logs
+	@echo "Starting web client..."
+	@cd $(WEB_CLIENT_DIR) && nohup npm run dev > ../logs/web-client.log 2>&1 & echo $$! > ../logs/web-client.pid
+	@echo "Starting mobile client..."
+	@cd $(MOBILE_CLIENT_DIR) && nohup npm start > ../logs/mobile-client.log 2>&1 & echo $$! > ../logs/mobile-client.pid
+	@echo "Starting admin portal..."
+	@cd $(ADMIN_PORTAL_DIR) && nohup npm run dev > ../logs/admin-portal.log 2>&1 & echo $$! > ../logs/admin-portal.pid
+	@sleep 2
 	@echo "$(GREEN)✓ All services started in background$(NC)"
 	@echo "$(YELLOW)Check logs in ./logs/ directory$(NC)"
 
