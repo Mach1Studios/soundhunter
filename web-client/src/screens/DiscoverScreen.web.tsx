@@ -5,10 +5,14 @@ import SectionTitle from '../components/shared/SectionTitle.web';
 import SearchBar from '../components/shared/SearchBar.web';
 import Chip from '../components/shared/Chip.web';
 import Button from '../components/shared/Button.web';
+import InteractiveMap from '../components/shared/InteractiveMap';
+import TimeRangeSlider from '../components/shared/TimeRangeSlider';
 
 const DiscoverScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [miniStartTime, setMiniStartTime] = useState<string>('08:00');
+  const [miniEndTime, setMiniEndTime] = useState<string>('12:00');
 
   const categories = ['Biophony', 'Geophony', 'Anthropophony'];
 
@@ -34,28 +38,37 @@ const DiscoverScreen: React.FC = () => {
                   Clusters preview
                 </span>
               </div>
-              <div className="w-full h-64 rounded-lg border border-neutral-300 bg-neutral-50 relative overflow-hidden wireframe-grid">
-                {/* Cluster dots */}
-                {Array.from({ length: 14 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute rounded-full border border-neutral-400/60 bg-white/80"
-                    style={{
-                      width: 24 + (i % 3) * 12,
-                      height: 24 + (i % 3) * 12,
-                      left: `${(i * 7) % 90}%`,
-                      top: `${(i * 13) % 70}%`,
-                    }}
-                  />
-                ))}
-              </div>
-              <div className="mt-3 h-6 border border-neutral-300 rounded flex items-center justify-center">
-                <span className="text-xs text-neutral-600">Time Scrubber</span>
+              <InteractiveMap
+                height={260}
+                className="mb-4"
+                startTime={miniStartTime}
+                endTime={miniEndTime}
+                timezone="Etc/UTC"
+                showDayNight
+                center={[20, 0]}
+                zoom={2}
+                hideControls
+                recordings={[]}
+              />
+              <div className="border border-neutral-200 rounded-lg p-3 bg-neutral-50/60">
+                <TimeRangeSlider
+                  startTime={miniStartTime}
+                  endTime={miniEndTime}
+                  onTimeRangeChange={(start, end) => {
+                    setMiniStartTime(start);
+                    setMiniEndTime(end);
+                  }}
+                  timezoneLabel="UTC"
+                  condensed
+                />
               </div>
               <Button
                 title="Open World Map"
                 variant="outline"
                 className="mt-3 w-full"
+                onPress={() => {
+                  // TODO: navigate to full map view
+                }}
               />
             </div>
           </div>

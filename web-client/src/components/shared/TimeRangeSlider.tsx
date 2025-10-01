@@ -6,6 +6,7 @@ interface TimeRangeSliderProps {
   onTimeRangeChange: (startTime: string, endTime: string) => void;
   className?: string;
   timezoneLabel?: string;
+  condensed?: boolean;
 }
 
 const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
@@ -13,7 +14,8 @@ const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
   endTime,
   onTimeRangeChange,
   className = '',
-  timezoneLabel = 'UTC'
+  timezoneLabel = 'UTC',
+  condensed = false
 }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<'start' | 'end' | 'bar' | null>(null);
@@ -166,26 +168,29 @@ const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-sm font-medium text-neutral-700">Time Range</span>
-        <div className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">
-          {formatTimeRange()} span
+      {!condensed && (
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm font-medium text-neutral-700">Time Range</span>
+          <div className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">
+            {formatTimeRange()} span
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="text-xs text-neutral-500 mb-2">
+      <div className={`${condensed ? 'text-[11px]' : 'text-xs'} text-neutral-500 mb-2`}>
         Times shown in {timezoneLabel}
+        {!condensed && ` • ${formatTimeRange()} span`}
       </div>
       
       <div 
         ref={sliderRef}
-        className="relative h-12 bg-gradient-to-r from-blue-50 via-blue-50 to-blue-50 rounded-lg border border-neutral-200 cursor-pointer"
+        className={`relative ${condensed ? 'h-10' : 'h-12'} bg-gradient-to-r from-blue-50 via-blue-50 to-blue-50 rounded-lg border border-neutral-200 cursor-pointer`}
         style={{
           background: 'linear-gradient(90deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)'
         }}
       >
         {/* Time markers */}
-        <div className="absolute inset-x-0 top-0 flex justify-between text-xs text-neutral-400 px-2 pt-1">
+        <div className={`absolute inset-x-0 top-0 flex justify-between ${condensed ? 'text-[10px] px-1 pt-1' : 'text-xs px-2 pt-1'} text-neutral-400`}>
           <span>00:00</span>
           <span>06:00</span>
           <span>12:00</span>
@@ -195,7 +200,7 @@ const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
 
         {/* Selected range bar */}
         <div
-          className="absolute top-2 bottom-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded shadow-sm cursor-move flex items-center justify-center text-white text-xs font-medium"
+          className={`absolute ${condensed ? 'top-2 bottom-2' : 'top-2 bottom-2'} bg-gradient-to-r from-blue-500 to-blue-600 rounded shadow-sm cursor-move flex items-center justify-center text-white ${condensed ? 'text-[11px]' : 'text-xs'} font-medium`}
           style={{
             left: `${startPercent}%`,
             width: `${barWidth}%`,
@@ -228,53 +233,55 @@ const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
       </div>
 
       {/* Quick preset buttons and custom input */}
-      <div className="flex gap-2 mt-3 flex-wrap items-center">
-        <span className="text-xs text-neutral-500 font-medium">Quick spans:</span>
-        {[
-          { label: '1hr', minutes: 60 },
-          { label: '2hr', minutes: 120 },
-          { label: '4hr', minutes: 240 },
-          { label: '8hr', minutes: 480 },
-        ].map(preset => (
-          <button
-            key={preset.label}
-            onClick={() => {
-              const currentCenter = (startMinutes + endMinutes) / 2;
-              const rawNewStart = Math.max(0, currentCenter - preset.minutes / 2);
-              const rawNewEnd = Math.min(1440, currentCenter + preset.minutes / 2);
-              
-              // Snap to 5-minute intervals
-              const newStart = Math.round(rawNewStart / 5) * 5;
-              const newEnd = Math.round(rawNewEnd / 5) * 5;
-              
-              onTimeRangeChange(minutesToTime(newStart), minutesToTime(newEnd));
-            }}
-            className="px-2 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded transition-colors"
-          >
-            {preset.label}
-          </button>
-        ))}
-        
-        {/* Custom span input */}
-        <div className="flex items-center gap-1 ml-3">
-          <span className="text-xs text-neutral-500">Custom:</span>
-          <input
-            type="text"
-            value={customSpan}
-            onChange={(e) => setCustomSpan(e.target.value)}
-            onKeyPress={handleCustomSpanKeyPress}
-            placeholder="30m, 1h 30m, 90"
-            className="w-20 px-2 py-1 text-xs border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <button
-            onClick={handleCustomSpanApply}
-            disabled={!customSpan.trim()}
-            className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded transition-colors"
-          >
-            Apply
-          </button>
+      {!condensed && (
+        <div className="flex gap-2 mt-3 flex-wrap items-center">
+          <span className="text-xs text-neutral-500 font-medium">Quick spans:</span>
+          {[
+            { label: '1hr', minutes: 60 },
+            { label: '2hr', minutes: 120 },
+            { label: '4hr', minutes: 240 },
+            { label: '8hr', minutes: 480 },
+          ].map(preset => (
+            <button
+              key={preset.label}
+              onClick={() => {
+                const currentCenter = (startMinutes + endMinutes) / 2;
+                const rawNewStart = Math.max(0, currentCenter - preset.minutes / 2);
+                const rawNewEnd = Math.min(1440, currentCenter + preset.minutes / 2);
+                
+                // Snap to 5-minute intervals
+                const newStart = Math.round(rawNewStart / 5) * 5;
+                const newEnd = Math.round(rawNewEnd / 5) * 5;
+                
+                onTimeRangeChange(minutesToTime(newStart), minutesToTime(newEnd));
+              }}
+              className="px-2 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded transition-colors"
+            >
+              {preset.label}
+            </button>
+          ))}
+          
+          {/* Custom span input */}
+          <div className="flex items-center gap-1 ml-3">
+            <span className="text-xs text-neutral-500">Custom:</span>
+            <input
+              type="text"
+              value={customSpan}
+              onChange={(e) => setCustomSpan(e.target.value)}
+              onKeyPress={handleCustomSpanKeyPress}
+              placeholder="30m, 1h 30m, 90"
+              className="w-20 px-2 py-1 text-xs border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <button
+              onClick={handleCustomSpanApply}
+              disabled={!customSpan.trim()}
+              className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded transition-colors"
+            >
+              Apply
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

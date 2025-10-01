@@ -22,9 +22,14 @@ interface InteractiveMapProps {
   endTime?: string; // End of time range (HH:MM format)
   timezone?: string;
   showDayNight?: boolean;
+  center?: [number, number];
+  zoom?: number;
+  hideControls?: boolean;
+  disableInteraction?: boolean;
 }
 
 const MIDPOINT_ADJUSTMENT_MS = 24 * 60 * 60 * 1000;
+const LEAFLET_STYLESHEET_ID = 'leaflet-core-stylesheet';
 
 // Dummy data for sound recordings
 const dummyRecordings: SoundRecording[] = [
@@ -178,7 +183,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   startTime,
   endTime,
   timezone = 'UTC',
-  showDayNight = true
+  showDayNight = true,
+  center = [40.7128, -74.0060],
+  zoom = 12,
+  hideControls = false,
+  disableInteraction = false
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -186,6 +195,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [mapError, setMapError] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const markersRef = useRef<Map<string, any>>(new Map());
+  const interactionEnabled = !disableInteraction;
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
+    if (!document.getElementById(LEAFLET_STYLESHEET_ID)) {
+      const link = document.createElement('link');
+      link.id = LEAFLET_STYLESHEET_ID;
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+      link.crossOrigin = '';
+      document.head.appendChild(link);
+    }
+  }, []);
 
   // Filter recordings based on time range
   const visibleRecordings = recordings.filter(recording => 
@@ -211,8 +237,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         });
 
         if (mapRef.current && !mapInstanceRef.current) {
-          // Initialize map centered on NYC
-          const map = L.map(mapRef.current).setView([40.7128, -74.0060], 12);
+          // Initialize map
+          const map = L.map(mapRef.current, {
+            zoomControl: !hideControls && interactionEnabled,
+            attributionControl: !hideControls,
+            dragging: interactionEnabled,
+            scrollWheelZoom: interactionEnabled,
+            doubleClickZoom: interactionEnabled,
+            boxZoom: interactionEnabled,
+            keyboard: interactionEnabled,
+            tap: interactionEnabled,
+            touchZoom: interactionEnabled,
+          }).setView(center, zoom);
 
           // Add tile layer
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -262,8 +298,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     };
 
     const layer = ensureLayer();
-    const date = getDateForTimeRange(startTime, endTime, timezone);
-    if (layer && date) {
+    const date = getDateForTimeRange(startTime, endTime, timezone) ?? new Date();
+    if (layer) {
       layer.setDate(date);
       if (typeof layer.redraw === 'function') {
         layer.redraw();
@@ -276,7 +312,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         terminatorLayerRef.current = null;
       }
     };
-  }, [showDayNight, startTime, endTime, timezone]);
+  }, [showDayNight, startTime, endTime, timezone, mapLoaded]);
 
   useEffect(() => {
     return () => {

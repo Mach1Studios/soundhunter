@@ -4,12 +4,15 @@ import { platformSelect } from '../utils/platform';
 import SectionTitle from '../components/shared/SectionTitle';
 import SearchBar from '../components/shared/SearchBar';
 import Chip from '../components/shared/Chip';
-import MapPlaceholder from '../components/shared/MapPlaceholder';
+import InteractiveMap from '../components/shared/InteractiveMap';
+import TimeRangeSlider from '../components/shared/TimeRangeSlider';
 import Button from '../components/shared/Button';
 
 const DiscoverScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [miniStartTime, setMiniStartTime] = useState<string>('08:00');
+  const [miniEndTime, setMiniEndTime] = useState<string>('12:00');
 
   const categories = ['Biophony', 'Geophony', 'Anthropophony'];
 
@@ -42,9 +45,32 @@ const DiscoverScreen: React.FC = () => {
                     Clusters preview
                   </Text>
                 </View>
-                <MapPlaceholder height={260} />
-                <View className="mt-3 h-6 border border-neutral-300 rounded flex-row items-center justify-center">
-                  <Text className="text-xs text-neutral-600">Time Scrubber</Text>
+                <View className="h-[200px] rounded-lg overflow-hidden border border-neutral-200">
+                  <InteractiveMap
+                    height={200}
+                    startTime={miniStartTime}
+                    endTime={miniEndTime}
+                    timezone="Etc/UTC"
+                    showDayNight
+                    center={[20, 0]}
+                    zoom={2}
+                    hideControls
+                    disableInteraction
+                    recordings={[]}
+                  />
+                </View>
+                <View className="mt-3">
+                  <TimeRangeSlider
+                    startTime={miniStartTime}
+                    endTime={miniEndTime}
+                    onTimeRangeChange={(start, end) => {
+                      setMiniStartTime(start);
+                      setMiniEndTime(end);
+                    }}
+                    timezoneLabel="UTC"
+                    condensed
+                    className="border border-neutral-200 rounded-lg p-2"
+                  />
                 </View>
                 <Button
                   title="Open World Map"
@@ -118,9 +144,31 @@ const DiscoverScreen: React.FC = () => {
             <Text className="text-xs text-neutral-500">Mini world view</Text>
             <Text className="text-xs text-neutral-400">Clusters preview</Text>
           </View>
-          <MapPlaceholder height={180} />
-          <View className="mt-2 h-6 border border-neutral-300 rounded flex-row items-center justify-center">
-            <Text className="text-xs text-neutral-600">Time Scrubber</Text>
+          <View className="h-[180px] rounded-lg overflow-hidden border border-neutral-200">
+            <InteractiveMap
+              height={180}
+              startTime={miniStartTime}
+              endTime={miniEndTime}
+              timezone="Etc/UTC"
+              showDayNight
+              center={[20, 0]}
+              zoom={2}
+              hideControls
+              recordings={[]}
+            />
+          </View>
+          <View className="mt-2">
+            <TimeRangeSlider
+              startTime={miniStartTime}
+              endTime={miniEndTime}
+              onTimeRangeChange={(start, end) => {
+                setMiniStartTime(start);
+                setMiniEndTime(end);
+              }}
+              timezoneLabel="UTC"
+              condensed
+              className="border border-neutral-200 rounded-lg p-2"
+            />
           </View>
           <Button
             title="Open World Map"
