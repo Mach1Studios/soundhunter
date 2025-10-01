@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { format } from 'date-fns';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 interface SoundRecording {
   id: string;
@@ -18,7 +20,11 @@ interface InteractiveMapProps {
   onMarkerClick?: (recording: SoundRecording) => void;
   startTime?: string; // Start of time range (HH:MM format)
   endTime?: string; // End of time range (HH:MM format)
+  timezone?: string;
+  showDayNight?: boolean;
 }
+
+const MIDPOINT_ADJUSTMENT_MS = 24 * 60 * 60 * 1000;
 
 // Dummy data for sound recordings
 const dummyRecordings: SoundRecording[] = [
@@ -117,12 +123,50 @@ const isRecordingVisible = (recording: SoundRecording, startTime?: string, endTi
   const recordingMinutes = timeToMinutes(recording.recordedTime);
   const startMinutes = timeToMinutes(startTime);
   const endMinutes = timeToMinutes(endTime);
-  
+
+  if (startMinutes === endMinutes) {
+    return true;
+  }
+
   // Handle day wrap-around (e.g., time range crosses midnight)
   if (startMinutes > endMinutes) {
     return recordingMinutes >= startMinutes || recordingMinutes <= endMinutes;
-  } else {
-    return recordingMinutes >= startMinutes && recordingMinutes <= endMinutes;
+  }
+
+  return recordingMinutes >= startMinutes && recordingMinutes <= endMinutes;
+};
+
+const getDateForTimeRange = (startTime?: string, endTime?: string, timezone?: string): Date | null => {
+  if (!startTime || !endTime || !timezone) {
+    return null;
+  }
+
+  const now = new Date();
+  const zonedNow = utcToZonedTime(now, timezone);
+  const datePart = format(zonedNow, 'yyyy-MM-dd');
+
+  const toUtcDate = (time: string) => {
+    const isoLike = `${datePart}T${time}:00`;
+    return zonedTimeToUtc(isoLike, timezone);
+  };
+
+  try {
+    const startDateUtc = toUtcDate(startTime);
+    let endDateUtc = toUtcDate(endTime);
+
+    if (startTime === endTime) {
+      return startDateUtc;
+    }
+
+    if (endDateUtc <= startDateUtc) {
+      endDateUtc = new Date(endDateUtc.getTime() + MIDPOINT_ADJUSTMENT_MS);
+    }
+
+    const midPointUtc = new Date(startDateUtc.getTime() + (endDateUtc.getTime() - startDateUtc.getTime()) / 2);
+    return midPointUtc;
+  } catch (error) {
+    console.warn('Failed to interpret timezone', error);
+    return null;
   }
 };
 
@@ -132,10 +176,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   recordings = dummyRecordings, 
   onMarkerClick,
   startTime,
-  endTime
+  endTime,
+  timezone = 'UTC',
+  showDayNight = true
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const terminatorLayerRef = useRef<any>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const markersRef = useRef<Map<string, any>>(new Map());
@@ -150,6 +197,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       try {
         // Dynamic import to avoid SSR issues
         const L = (await import('leaflet')).default;
+
+        if (typeof window !== 'undefined') {
+          (window as any).L = L;
+        }
         
         // Fix for default markers in react-leaflet
         delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -182,6 +233,58 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     if (!mapInstanceRef.current && mapRef.current) {
       setTimeout(initializeMap, 100);
     }
+  }, []);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) {
+      return;
+    }
+
+    if (!showDayNight) {
+      if (terminatorLayerRef.current) {
+        map.removeLayer(terminatorLayerRef.current);
+        terminatorLayerRef.current = null;
+      }
+      return;
+    }
+
+    const ensureLayer = () => {
+      if (terminatorLayerRef.current) {
+        return terminatorLayerRef.current;
+      }
+      const terminatorFactory = require('leaflet-terminator');
+      const date = getDateForTimeRange(startTime, endTime, timezone) ?? new Date();
+      const layer = terminatorFactory(date);
+      layer.addTo(map);
+      terminatorLayerRef.current = layer;
+      return layer;
+    };
+
+    const layer = ensureLayer();
+    const date = getDateForTimeRange(startTime, endTime, timezone);
+    if (layer && date) {
+      layer.setDate(date);
+      if (typeof layer.redraw === 'function') {
+        layer.redraw();
+      }
+    }
+
+    return () => {
+      if (terminatorLayerRef.current && !showDayNight) {
+        map.removeLayer(terminatorLayerRef.current);
+        terminatorLayerRef.current = null;
+      }
+    };
+  }, [showDayNight, startTime, endTime, timezone]);
+
+  useEffect(() => {
+    return () => {
+      if (terminatorLayerRef.current && mapInstanceRef.current) {
+        mapInstanceRef.current.removeLayer(terminatorLayerRef.current);
+        terminatorLayerRef.current = null;
+      }
+    };
   }, []);
 
   // Update markers when recordings or time filter changes

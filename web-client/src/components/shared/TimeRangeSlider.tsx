@@ -5,13 +5,15 @@ interface TimeRangeSliderProps {
   endTime: string; // HH:MM format
   onTimeRangeChange: (startTime: string, endTime: string) => void;
   className?: string;
+  timezoneLabel?: string;
 }
 
 const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
   startTime,
   endTime,
   onTimeRangeChange,
-  className = ''
+  className = '',
+  timezoneLabel = 'UTC'
 }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<'start' | 'end' | 'bar' | null>(null);
@@ -169,6 +171,10 @@ const TimeRangeSlider: React.FC<TimeRangeSliderProps> = ({
         <div className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">
           {formatTimeRange()} span
         </div>
+      </div>
+
+      <div className="text-xs text-neutral-500 mb-2">
+        Times shown in {timezoneLabel}
       </div>
       
       <div 
